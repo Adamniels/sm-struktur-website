@@ -1,18 +1,27 @@
 import Link from "next/link";
+import { client } from "@/sanity/client";
+import type { PieceCard as PieceCardData } from "@/sanity/queries";
+import { featuredPiecesQuery, recentPiecesQuery } from "@/sanity/queries";
+import PieceCard from "@/components/PieceCard";
 
-export default function Home() {
+export const revalidate = 60;
+
+export default async function Home() {
+  // Try featured pieces first, fall back to 3 most recent
+  let pieces = await client.fetch<PieceCardData[]>(featuredPiecesQuery);
+  if (pieces.length === 0) {
+    pieces = await client.fetch<PieceCardData[]>(recentPiecesQuery);
+  }
+
   return (
     <>
-      {/* Hero — full viewport, cream background, forest green text */}
+      {/* Hero */}
       <section className="relative min-h-screen flex items-center bg-cream pt-20">
         <div className="page-container">
           <div className="max-w-3xl">
-            {/* Eyebrow label */}
             <p className="font-sans text-xs tracking-[0.25em] uppercase text-gold mb-8">
               Fine Carpentry
             </p>
-
-            {/* Main headline */}
             <h1
               className="font-serif text-display-xl text-forest mb-8 leading-tight"
               style={{ fontWeight: 300 }}
@@ -21,13 +30,9 @@ export default function Home() {
               <br />
               <em>tells a story</em>
             </h1>
-
-            {/* Sub-copy */}
             <p className="font-sans text-base md:text-lg text-charcoal/70 mb-12 max-w-lg leading-relaxed">
               Handcrafted furniture and bespoke woodwork. Built with intention, designed to be used for a lifetime.
             </p>
-
-            {/* CTAs */}
             <div className="flex flex-wrap gap-4">
               <Link
                 href="/portfolio"
@@ -58,44 +63,48 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured pieces placeholder — will be populated from Sanity */}
-      <section className="bg-cream-dark py-24">
-        <div className="page-container">
-          <div className="flex items-end justify-between mb-12">
-            <div>
-              <p className="font-sans text-xs tracking-[0.25em] uppercase text-gold mb-3">
-                Selected Work
-              </p>
-              <h2 className="font-serif text-display-md text-forest" style={{ fontWeight: 300 }}>
-                Recent pieces
-              </h2>
-            </div>
-            <Link
-              href="/portfolio"
-              className="hidden md:inline-flex font-sans text-xs tracking-widest uppercase text-forest/60 hover:text-gold transition-colors duration-300 pb-1 border-b border-forest/20 hover:border-gold"
-            >
-              View all work
-            </Link>
-          </div>
-
-          {/* Piece grid — placeholder state */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="group">
-                <div className="aspect-[4/5] bg-sand animate-pulse rounded-sm" />
-                <div className="mt-4 space-y-2">
-                  <div className="h-4 bg-sand rounded w-3/4 animate-pulse" />
-                  <div className="h-3 bg-sand/60 rounded w-1/2 animate-pulse" />
-                </div>
+      {/* Featured pieces */}
+      {pieces.length > 0 && (
+        <section className="bg-cream-dark py-24">
+          <div className="page-container">
+            <div className="flex items-end justify-between mb-12">
+              <div>
+                <p className="font-sans text-xs tracking-[0.25em] uppercase text-gold mb-3">
+                  Selected Work
+                </p>
+                <h2
+                  className="font-serif text-display-md text-forest"
+                  style={{ fontWeight: 300 }}
+                >
+                  Recent pieces
+                </h2>
               </div>
-            ))}
-          </div>
+              <Link
+                href="/portfolio"
+                className="hidden md:inline-flex font-sans text-xs tracking-widest uppercase text-forest/60 hover:text-gold transition-colors duration-300 pb-1 border-b border-forest/20 hover:border-gold"
+              >
+                View all work
+              </Link>
+            </div>
 
-          <p className="mt-8 font-sans text-sm text-charcoal/40 italic text-center">
-            Connect Sanity to populate pieces
-          </p>
-        </div>
-      </section>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {pieces.map((piece, i) => (
+                <PieceCard key={piece._id} piece={piece} priority={i === 0} />
+              ))}
+            </div>
+
+            {/* Mobile "view all" link */}
+            <div className="mt-10 md:hidden text-center">
+              <Link
+                href="/portfolio"
+                className="font-sans text-xs tracking-widest uppercase text-forest/60 hover:text-gold transition-colors duration-300 pb-1 border-b border-forest/20 hover:border-gold"
+              >
+                View all work
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Commission invite block */}
       <section className="bg-forest py-24 md:py-32">

@@ -26,7 +26,7 @@ export type PieceCategory =
   | "tables"
   | "outdoor";
 
-// ─── Piece (card / list view) ─────────────────────────────────────────────────
+// ─── Piece (card / list view) ────────────────────────────────────────────────
 
 export interface PieceCard {
   _id: string;
@@ -54,6 +54,7 @@ export const allPiecesQuery = groq`
   }
 `;
 
+// Featured pieces for the homepage — falls back gracefully if none are marked featured
 export const featuredPiecesQuery = groq`
   *[_type == "piece" && featured == true] | order(order asc) [0...6] {
     _id,
@@ -63,15 +64,30 @@ export const featuredPiecesQuery = groq`
     status,
     price,
     heroImage,
+    featured,
     year
   }
 `;
 
-// ─── Piece (full detail view) ─────────────────────────────────────────────────
+// Fallback: most recent pieces, used on homepage when nothing is marked featured
+export const recentPiecesQuery = groq`
+  *[_type == "piece"] | order(_createdAt desc) [0...3] {
+    _id,
+    title,
+    slug,
+    category,
+    status,
+    price,
+    heroImage,
+    featured,
+    year
+  }
+`;
+
+// ─── Piece (full detail view) ────────────────────────────────────────────────
 
 export interface PieceDetail extends PieceCard {
   images?: SanityImage[];
-  // Portable Text blocks
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   description?: any[];
   materials?: string[];
@@ -100,5 +116,33 @@ export const pieceBySlugQuery = groq`
 export const allPieceSlugsQuery = groq`
   *[_type == "piece" && defined(slug.current)] {
     "slug": slug.current
+  }
+`;
+
+// ─── About page ──────────────────────────────────────────────────────────────
+
+export interface AboutValue {
+  title: string;
+  description: string;
+}
+
+export interface AboutPage {
+  headline?: string;
+  subheadline?: string;
+  portrait?: SanityImage;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  body?: any[];
+  workshopImages?: SanityImage[];
+  values?: AboutValue[];
+}
+
+export const aboutQuery = groq`
+  *[_type == "about" && _id == "about-singleton"][0] {
+    headline,
+    subheadline,
+    portrait,
+    body,
+    workshopImages,
+    values
   }
 `;
