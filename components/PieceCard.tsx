@@ -69,7 +69,7 @@ export default function PieceCard({ piece, priority = false }: Props) {
           </h3>
           {piece.price && piece.status === "available" && (
             <span className="font-sans text-sm text-charcoal/50 whitespace-nowrap mt-1">
-              {piece.price.toLocaleString("nb-NO")} kr
+              {piece.price.toLocaleString("sv-SE")} kr
             </span>
           )}
         </div>

@@ -181,7 +181,7 @@ export default async function PieceDetailPage({
                     Price
                   </p>
                   <p className="font-serif text-3xl text-forest">
-                    {piece.price.toLocaleString("nb-NO")}{" "}
+                    {piece.price.toLocaleString("sv-SE")}{" "}
                     <span className="text-lg text-charcoal/40">kr</span>
                   </p>
                 </div>

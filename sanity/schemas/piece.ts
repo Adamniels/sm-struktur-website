@@ -64,7 +64,7 @@ export const pieceSchema = defineType({
 
     defineField({
       name: "price",
-      title: "Price (NOK)",
+      title: "Price (SEK)",
       type: "number",
       description: "Leave empty if commission-only or not for sale.",
     }),

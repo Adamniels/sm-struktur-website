@@ -70,7 +70,7 @@ export default function Footer() {
             &copy; {year} SM Struktur. All rights reserved.
           </p>
           <p className="font-sans text-xs text-cream/30 italic font-serif">
-            Handcrafted in Norway
+            Handcrafted in Sweden
           </p>
         </div>
       </div>
