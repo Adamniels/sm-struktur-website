@@ -13,7 +13,7 @@ import StatusBadge from "@/components/StatusBadge";
 import PortableTextRenderer from "@/components/PortableTextRenderer";
 import PieceGallery from "@/components/PieceGallery";
 import type { Locale } from "@/lib/i18n";
-import { useT, localePath, locales } from "@/lib/i18n";
+import { getT, localePath, locales } from "@/lib/i18n";
 
 export const revalidate = 60;
 
@@ -61,7 +61,7 @@ export default async function PieceDetailPage({
 
   if (!piece) notFound();
 
-  const tr = useT(locale as Locale);
+  const tr = getT(locale as Locale);
   const lp = (path: string) => localePath(locale as Locale, path);
 
   // Use locale-specific content with Swedish fallback

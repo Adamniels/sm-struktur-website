@@ -7,7 +7,7 @@ import { aboutQuery } from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
 import PortableTextRenderer from "@/components/PortableTextRenderer";
 import type { Locale } from "@/lib/i18n";
-import { useT, localePath } from "@/lib/i18n";
+import { getT, localePath } from "@/lib/i18n";
 
 export const revalidate = 60;
 
@@ -17,7 +17,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const tr = useT(locale as Locale);
+  const tr = getT(locale as Locale);
   return {
     title: tr.about.eyebrow,
     description:
@@ -33,7 +33,7 @@ export default async function AboutPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const tr = useT(locale as Locale);
+  const tr = getT(locale as Locale);
   const lp = (path: string) => localePath(locale as Locale, path);
   const about = await client.fetch<AboutPageData | null>(aboutQuery);
 

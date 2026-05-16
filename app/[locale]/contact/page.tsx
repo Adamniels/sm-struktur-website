@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import ContactForm from "@/components/ContactForm";
 import type { Locale } from "@/lib/i18n";
-import { useT } from "@/lib/i18n";
+import { getT } from "@/lib/i18n";
 
 export async function generateMetadata({
   params,
@@ -10,7 +10,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const tr = useT(locale as Locale);
+  const tr = getT(locale as Locale);
   return {
     title: tr.contact.headline,
     description:
@@ -26,7 +26,7 @@ export default async function ContactPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const tr = useT(locale as Locale);
+  const tr = getT(locale as Locale);
 
   return (
     <>

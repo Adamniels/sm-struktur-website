@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { client } from "@/sanity/client";
 import { allPiecesQuery, PieceCard } from "@/sanity/queries";
 import PortfolioGrid from "@/components/PortfolioGrid";
 import type { Locale } from "@/lib/i18n";
-import { useT } from "@/lib/i18n";
+import { getT } from "@/lib/i18n";
 
 export const revalidate = 60;
 
@@ -13,7 +14,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const tr = useT(locale as Locale);
+  const tr = getT(locale as Locale);
   return {
     title: tr.portfolio.eyebrow,
     description:
@@ -29,7 +30,7 @@ export default async function PortfolioPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const tr = useT(locale as Locale);
+  const tr = getT(locale as Locale);
   const pieces = await client.fetch<PieceCard[]>(allPiecesQuery);
 
   return (
@@ -62,12 +63,12 @@ export default async function PortfolioPage({
                 {locale === "sv"
                   ? "Lägg till ditt första objekt i "
                   : "Add your first piece in the "}
-                <a
+                <Link
                   href="/studio"
                   className="underline hover:text-forest transition-colors"
                 >
                   {tr.portfolio.emptyLink}
-                </a>
+                </Link>
                 .
               </p>
             </div>

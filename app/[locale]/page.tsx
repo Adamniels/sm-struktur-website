@@ -4,7 +4,7 @@ import type { PieceCard as PieceCardData } from "@/sanity/queries";
 import { featuredPiecesQuery, recentPiecesQuery } from "@/sanity/queries";
 import PieceCard from "@/components/PieceCard";
 import type { Locale } from "@/lib/i18n";
-import { useT, localePath } from "@/lib/i18n";
+import { getT, localePath } from "@/lib/i18n";
 
 export const revalidate = 60;
 
@@ -14,7 +14,7 @@ export default async function Home({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const tr = useT(locale as Locale);
+  const tr = getT(locale as Locale);
 
   let pieces = await client.fetch<PieceCardData[]>(featuredPiecesQuery);
   if (pieces.length === 0) {

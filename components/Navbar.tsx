@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import type { Locale } from "@/lib/i18n";
-import { useT, localePath, switchLocalePath } from "@/lib/i18n";
+import { getT, localePath, switchLocalePath } from "@/lib/i18n";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -13,7 +13,7 @@ export default function Navbar() {
 
   // Detect locale from the URL
   const locale: Locale = pathname.startsWith("/en") ? "en" : "sv";
-  const tr = useT(locale);
+  const tr = getT(locale);
 
   const lp = (path: string) => localePath(locale, path);
   const switchHref = switchLocalePath(locale, pathname);

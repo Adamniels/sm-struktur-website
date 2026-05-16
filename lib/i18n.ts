@@ -254,6 +254,6 @@ const t = {
 
 export type Translations = (typeof t)["sv"];
 
-export function useT(locale: Locale): Translations {
+export function getT(locale: Locale): Translations {
   return t[locale] as unknown as Translations;
 }

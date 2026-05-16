@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import type { Locale } from "@/lib/i18n";
-import { useT, localePath } from "@/lib/i18n";
+import { getT, localePath } from "@/lib/i18n";
 
 export async function generateMetadata({
   params,
@@ -9,7 +9,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const tr = useT(locale as Locale);
+  const tr = getT(locale as Locale);
   return {
     title: tr.commissions.headline,
     description:
@@ -25,7 +25,7 @@ export default async function CommissionsPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const tr = useT(locale as Locale);
+  const tr = getT(locale as Locale);
   const lp = (path: string) => localePath(locale as Locale, path);
 
   return (

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { Locale } from "@/lib/i18n";
-import { useT, localePath } from "@/lib/i18n";
+import { getT, localePath } from "@/lib/i18n";
 
 const strings = {
   sv: {
@@ -27,7 +27,7 @@ const strings = {
 export default function Footer() {
   const pathname = usePathname();
   const locale: Locale = pathname.startsWith("/en") ? "en" : "sv";
-  const tr = useT(locale);
+  const tr = getT(locale);
   const t = strings[locale];
   const lp = (path: string) => localePath(locale, path);
   const year = new Date().getFullYear();

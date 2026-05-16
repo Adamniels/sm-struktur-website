@@ -4,7 +4,7 @@ import { useState } from "react";
 import PieceCard from "./PieceCard";
 import { PieceCard as PieceCardType, PieceCategory } from "@/sanity/queries";
 import type { Locale } from "@/lib/i18n";
-import { useT } from "@/lib/i18n";
+import { getT } from "@/lib/i18n";
 
 interface Props {
   pieces: PieceCardType[];
@@ -12,7 +12,7 @@ interface Props {
 }
 
 export default function PortfolioGrid({ pieces, locale = "sv" }: Props) {
-  const tr = useT(locale);
+  const tr = getT(locale);
   const [active, setActive] = useState<PieceCategory | "all">("all");
 
   const CATEGORIES: { value: PieceCategory | "all"; label: string }[] = [

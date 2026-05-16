@@ -4,7 +4,7 @@ import { PieceCard as PieceCardType } from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
 import StatusBadge from "./StatusBadge";
 import type { Locale } from "@/lib/i18n";
-import { useT, localePath } from "@/lib/i18n";
+import { getT, localePath } from "@/lib/i18n";
 
 interface Props {
   piece: PieceCardType;
@@ -13,7 +13,7 @@ interface Props {
 }
 
 export default function PieceCard({ piece, priority = false, locale = "sv" }: Props) {
-  const tr = useT(locale);
+  const tr = getT(locale);
   const href = localePath(locale, `/portfolio/${piece.slug.current}`);
 
   const imageUrl = urlFor(piece.heroImage)
