@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import type { Locale } from "@/lib/i18n";
@@ -48,9 +49,18 @@ export default function Navbar() {
         {/* Wordmark */}
         <Link
           href={lp("/")}
-          className="font-serif text-xl md:text-2xl text-forest tracking-wide hover:text-gold transition-colors duration-300"
+          className="flex items-center gap-2 hover:opacity-80 transition-opacity duration-300 group"
         >
-          SM Struktur AB
+          <Image
+            src="/logos/logo-transparent.png"
+            alt="SM Struktur"
+            width={48}
+            height={48}
+            className="object-contain"
+          />
+          <span className="font-serif text-xl md:text-2xl text-forest tracking-wide group-hover:text-gold transition-colors duration-300">
+            SM Struktur AB
+          </span>
         </Link>
 
         {/* Desktop nav */}

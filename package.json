@@ -19,6 +19,7 @@
     "next": "^15",
     "react": "^19",
     "react-dom": "^19",
+    "resend": "^6.12.3",
     "sanity": "^5.25.1",
     "styled-components": "^6.4.1",
     "yet-another-react-lightbox": "^3.32.0"
