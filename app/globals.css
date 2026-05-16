@@ -119,17 +119,14 @@ p {
     border: 1px solid var(--color-gold);
   }
 
-  /* Scroll reveal — JS adds .revealed */
-  .reveal {
-    opacity: 0;
-    transform: translateY(28px);
-    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .reveal.revealed {
-    opacity: 1;
-    transform: translateY(0);
-  }
+}
+
+/* GSAP initial states — hero items start invisible so there's no flash
+   before the entrance animation runs. Scroll-triggered elements are handled
+   entirely by GSAP (immediateRender) so no CSS needed for those. */
+[data-animate="hero-item"],
+[data-animate="hero-lines"] {
+  opacity: 0;
 }
 
 /* Keep Sanity Studio styles isolated */

@@ -21,11 +21,8 @@ interface Props {
 export default function PortfolioGrid({ pieces }: Props) {
   const [active, setActive] = useState<PieceCategory | "all">("all");
 
-  // Only show category tabs that have at least one piece
   const availableCategories = CATEGORIES.filter(
-    (cat) =>
-      cat.value === "all" ||
-      pieces.some((p) => p.category === cat.value)
+    (cat) => cat.value === "all" || pieces.some((p) => p.category === cat.value)
   );
 
   const filtered =
@@ -50,7 +47,7 @@ export default function PortfolioGrid({ pieces }: Props) {
         ))}
       </div>
 
-      {/* Masonry grid using CSS columns */}
+      {/* Masonry grid */}
       {filtered.length === 0 ? (
         <p className="font-sans text-sm text-charcoal/40 italic py-24 text-center">
           No pieces in this category yet.

@@ -16,13 +16,20 @@ export default async function Home() {
   return (
     <>
       {/* Hero */}
-      <section className="relative min-h-screen flex items-center bg-cream pt-20">
+      <section
+        data-animate="hero"
+        className="relative min-h-screen flex items-center bg-cream pt-20"
+      >
         <div className="page-container">
-          <div className="max-w-3xl">
-            <p className="font-sans text-xs tracking-[0.25em] uppercase text-gold mb-8">
+          <div data-animate="hero-content" className="max-w-3xl">
+            <p
+              data-animate="hero-item"
+              className="font-sans text-xs tracking-[0.25em] uppercase text-gold mb-8"
+            >
               Fine Carpentry
             </p>
             <h1
+              data-animate="hero-item"
               className="font-serif text-display-xl text-forest mb-8 leading-tight"
               style={{ fontWeight: 300 }}
             >
@@ -30,10 +37,13 @@ export default async function Home() {
               <br />
               <em>tells a story</em>
             </h1>
-            <p className="font-sans text-base md:text-lg text-charcoal/70 mb-12 max-w-lg leading-relaxed">
+            <p
+              data-animate="hero-item"
+              className="font-sans text-base md:text-lg text-charcoal/70 mb-12 max-w-lg leading-relaxed"
+            >
               Handcrafted furniture and bespoke woodwork. Built with intention, designed to be used for a lifetime.
             </p>
-            <div className="flex flex-wrap gap-4">
+            <div data-animate="hero-item" className="flex flex-wrap gap-4">
               <Link
                 href="/portfolio"
                 className="inline-flex items-center gap-3 bg-forest text-cream font-sans text-sm tracking-widest uppercase px-8 py-4 hover:bg-forest-dark transition-colors duration-300"
@@ -50,8 +60,11 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* Decorative gold vertical line */}
-        <div className="absolute right-8 md:right-16 top-1/2 -translate-y-1/2 hidden md:flex flex-col items-center gap-4">
+        {/* Decorative gold vertical lines */}
+        <div
+          data-animate="hero-lines"
+          className="absolute right-8 md:right-16 top-1/2 -translate-y-1/2 hidden md:flex flex-col items-center gap-4"
+        >
           <div className="w-px h-24 bg-gold/40" />
           <p
             className="font-sans text-xs tracking-[0.2em] uppercase text-gold/60"
@@ -69,10 +82,14 @@ export default async function Home() {
           <div className="page-container">
             <div className="flex items-end justify-between mb-12">
               <div>
-                <p className="font-sans text-xs tracking-[0.25em] uppercase text-gold mb-3">
+                <p
+                  data-animate="fade-up"
+                  className="font-sans text-xs tracking-[0.25em] uppercase text-gold mb-3"
+                >
                   Selected Work
                 </p>
                 <h2
+                  data-animate="fade-up"
                   className="font-serif text-display-md text-forest"
                   style={{ fontWeight: 300 }}
                 >
@@ -87,7 +104,10 @@ export default async function Home() {
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div
+              data-animate="cascade"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            >
               {pieces.map((piece, i) => (
                 <PieceCard key={piece._id} piece={piece} priority={i === 0} />
               ))}
@@ -109,24 +129,33 @@ export default async function Home() {
       {/* Commission invite block */}
       <section className="bg-forest py-24 md:py-32">
         <div className="page-container text-center">
-          <p className="font-sans text-xs tracking-[0.25em] uppercase text-gold mb-6">
+          <p
+            data-animate="fade-up"
+            className="font-sans text-xs tracking-[0.25em] uppercase text-gold mb-6"
+          >
             Bespoke Work
           </p>
           <h2
+            data-animate="fade-up"
             className="font-serif text-display-lg text-cream mb-6 max-w-2xl mx-auto"
             style={{ fontWeight: 300 }}
           >
             Something made just for you
           </h2>
-          <p className="font-sans text-base text-cream/60 mb-12 max-w-xl mx-auto leading-relaxed">
+          <p
+            data-animate="fade-up"
+            className="font-sans text-base text-cream/60 mb-12 max-w-xl mx-auto leading-relaxed"
+          >
             Every commission starts with a conversation. Tell us what you have in mind — the space, the feeling, the story — and we will build something that fits perfectly.
           </p>
-          <Link
-            href="/commissions"
-            className="inline-flex items-center gap-3 border border-gold text-gold font-sans text-sm tracking-widest uppercase px-8 py-4 hover:bg-gold hover:text-forest transition-all duration-300"
-          >
-            Learn About Commissions
-          </Link>
+          <div data-animate="fade-up">
+            <Link
+              href="/commissions"
+              className="inline-flex items-center gap-3 border border-gold text-gold font-sans text-sm tracking-widest uppercase px-8 py-4 hover:bg-gold hover:text-forest transition-all duration-300"
+            >
+              Learn About Commissions
+            </Link>
+          </div>
         </div>
       </section>
     </>

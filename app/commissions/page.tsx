@@ -38,7 +38,6 @@ export default function CommissionsPage() {
                 From there we work closely with you through design, material
                 selection, and build — keeping you involved at every stage.
               </p>
-
               <div className="pt-4">
                 <Link
                   href="/contact"
