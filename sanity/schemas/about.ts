@@ -8,17 +8,31 @@ export const aboutSchema = defineType({
   fields: [
     defineField({
       name: "headline",
-      title: "Headline",
+      title: "Headline (Swedish)",
       type: "string",
       description: "The main heading on the About page.",
       validation: (Rule) => Rule.required(),
     }),
 
     defineField({
+      name: "headline_en",
+      title: "Headline (English)",
+      type: "string",
+      description: "English headline — leave empty to use the Swedish version.",
+    }),
+
+    defineField({
       name: "subheadline",
-      title: "Subheadline",
+      title: "Subheadline (Swedish)",
       type: "string",
       description: "A short line below the headline — one sentence.",
+    }),
+
+    defineField({
+      name: "subheadline_en",
+      title: "Subheadline (English)",
+      type: "string",
+      description: "English subheadline — leave empty to fall back to Swedish.",
     }),
 
     defineField({
@@ -38,9 +52,31 @@ export const aboutSchema = defineType({
 
     defineField({
       name: "body",
-      title: "Story / Bio",
+      title: "Story / Bio (Swedish)",
       type: "array",
       description: "The craftsman's background, philosophy, and approach.",
+      of: [
+        {
+          type: "block",
+          styles: [
+            { title: "Normal", value: "normal" },
+            { title: "Heading", value: "h3" },
+          ],
+          marks: {
+            decorators: [
+              { title: "Strong", value: "strong" },
+              { title: "Emphasis", value: "em" },
+            ],
+          },
+        },
+      ],
+    }),
+
+    defineField({
+      name: "body_en",
+      title: "Story / Bio (English)",
+      type: "array",
+      description: "English bio — leave empty to fall back to Swedish.",
       of: [
         {
           type: "block",

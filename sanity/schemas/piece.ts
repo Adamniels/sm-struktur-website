@@ -117,10 +117,39 @@ export const pieceSchema = defineType({
     }),
 
     defineField({
+      name: "title_en",
+      title: "Title (English)",
+      type: "string",
+      description: "English title — leave empty to use the Swedish title.",
+    }),
+
+    defineField({
       name: "description",
-      title: "Description",
+      title: "Description (Swedish)",
       type: "array",
       description: "Rich text description of the piece — materials, process, story.",
+      of: [
+        {
+          type: "block",
+          styles: [
+            { title: "Normal", value: "normal" },
+            { title: "Large", value: "h3" },
+          ],
+          marks: {
+            decorators: [
+              { title: "Strong", value: "strong" },
+              { title: "Emphasis", value: "em" },
+            ],
+          },
+        },
+      ],
+    }),
+
+    defineField({
+      name: "description_en",
+      title: "Description (English)",
+      type: "array",
+      description: "English description — leave empty to fall back to Swedish.",
       of: [
         {
           type: "block",

@@ -2,17 +2,34 @@ import type { Metadata } from "next";
 import { client } from "@/sanity/client";
 import { allPiecesQuery, PieceCard } from "@/sanity/queries";
 import PortfolioGrid from "@/components/PortfolioGrid";
+import type { Locale } from "@/lib/i18n";
+import { useT } from "@/lib/i18n";
 
-export const metadata: Metadata = {
-  title: "Work",
-  description:
-    "A collection of handcrafted furniture and bespoke woodwork — each piece built with intention.",
-};
-
-// Revalidate every 60 seconds so new Sanity pieces appear without a full rebuild
 export const revalidate = 60;
 
-export default async function PortfolioPage() {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const tr = useT(locale as Locale);
+  return {
+    title: tr.portfolio.eyebrow,
+    description:
+      locale === "sv"
+        ? "En samling handgjorda möbler och skräddarsytt träarbete — varje objekt byggt med intention."
+        : "A collection of handcrafted furniture and bespoke woodwork — each piece built with intention.",
+  };
+}
+
+export default async function PortfolioPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const tr = useT(locale as Locale);
   const pieces = await client.fetch<PieceCard[]>(allPiecesQuery);
 
   return (
@@ -21,13 +38,13 @@ export default async function PortfolioPage() {
       <section className="pt-36 pb-16 bg-cream">
         <div className="page-container">
           <p className="font-sans text-xs tracking-[0.25em] uppercase text-gold mb-4">
-            Portfolio
+            {tr.portfolio.eyebrow}
           </p>
           <h1
             className="font-serif text-display-lg text-forest mb-6"
             style={{ fontWeight: 300 }}
           >
-            The work
+            {tr.portfolio.headline}
           </h1>
           <div className="w-12 h-px bg-gold" />
         </div>
@@ -39,21 +56,23 @@ export default async function PortfolioPage() {
           {pieces.length === 0 ? (
             <div className="py-32 text-center">
               <p className="font-serif text-2xl text-forest/40 mb-4">
-                No pieces published yet
+                {tr.portfolio.empty}
               </p>
               <p className="font-sans text-sm text-charcoal/40">
-                Add your first piece in the{" "}
+                {locale === "sv"
+                  ? "Lägg till ditt första objekt i "
+                  : "Add your first piece in the "}
                 <a
                   href="/studio"
                   className="underline hover:text-forest transition-colors"
                 >
-                  admin studio
+                  {tr.portfolio.emptyLink}
                 </a>
                 .
               </p>
             </div>
           ) : (
-            <PortfolioGrid pieces={pieces} />
+            <PortfolioGrid pieces={pieces} locale={locale as Locale} />
           )}
         </div>
       </section>

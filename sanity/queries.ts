@@ -87,9 +87,12 @@ export const recentPiecesQuery = groq`
 // ─── Piece (full detail view) ────────────────────────────────────────────────
 
 export interface PieceDetail extends PieceCard {
+  title_en?: string;
   images?: SanityImage[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   description?: any[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  description_en?: any[];
   materials?: string[];
   dimensions?: PieceDimensions;
 }
@@ -98,6 +101,7 @@ export const pieceBySlugQuery = groq`
   *[_type == "piece" && slug.current == $slug][0] {
     _id,
     title,
+    title_en,
     slug,
     category,
     status,
@@ -105,6 +109,7 @@ export const pieceBySlugQuery = groq`
     heroImage,
     images,
     description,
+    description_en,
     materials,
     dimensions,
     year,
@@ -128,10 +133,14 @@ export interface AboutValue {
 
 export interface AboutPage {
   headline?: string;
+  headline_en?: string;
   subheadline?: string;
+  subheadline_en?: string;
   portrait?: SanityImage;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   body?: any[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  body_en?: any[];
   workshopImages?: SanityImage[];
   values?: AboutValue[];
 }
@@ -139,9 +148,12 @@ export interface AboutPage {
 export const aboutQuery = groq`
   *[_type == "about" && _id == "about-singleton"][0] {
     headline,
+    headline_en,
     subheadline,
+    subheadline_en,
     portrait,
     body,
+    body_en,
     workshopImages,
     values
   }

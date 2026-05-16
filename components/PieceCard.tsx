@@ -3,22 +3,19 @@ import Image from "next/image";
 import { PieceCard as PieceCardType } from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
 import StatusBadge from "./StatusBadge";
+import type { Locale } from "@/lib/i18n";
+import { useT, localePath } from "@/lib/i18n";
 
 interface Props {
   piece: PieceCardType;
   priority?: boolean;
+  locale?: Locale;
 }
 
-const categoryLabel: Record<string, string> = {
-  furniture: "Furniture",
-  commission: "Custom Commission",
-  storage: "Storage",
-  seating: "Seating",
-  tables: "Tables",
-  outdoor: "Outdoor",
-};
+export default function PieceCard({ piece, priority = false, locale = "sv" }: Props) {
+  const tr = useT(locale);
+  const href = localePath(locale, `/portfolio/${piece.slug.current}`);
 
-export default function PieceCard({ piece, priority = false }: Props) {
   const imageUrl = urlFor(piece.heroImage)
     .width(900)
     .height(1100)
@@ -35,7 +32,7 @@ export default function PieceCard({ piece, priority = false }: Props) {
 
   return (
     <Link
-      href={`/portfolio/${piece.slug.current}`}
+      href={href}
       className="group block mb-6 break-inside-avoid"
     >
       {/* Image container */}
@@ -76,7 +73,7 @@ export default function PieceCard({ piece, priority = false }: Props) {
 
         <div className="flex items-center gap-3">
           <p className="font-sans text-xs tracking-widest uppercase text-charcoal/40">
-            {categoryLabel[piece.category] ?? piece.category}
+            {tr.categories[piece.category as keyof typeof tr.categories] ?? piece.category}
           </p>
           {piece.year && (
             <>

@@ -6,5 +6,7 @@
 6. ~~Want to when inside a piece and pressing a image I want them all to popup bigger and being able to "scroll"/"change" between them~~
 7. Make swedish first language and english second
   1. need to let the user enter both when they write title, desc and such
-8. I am thinking that about page as all workshop pictures when they are creating different pieces and such
+8. Deploy
+  1. kind of feel like sanity should be its own repository?
+9. I am thinking that about page as all workshop pictures when they are creating different pieces and such
 

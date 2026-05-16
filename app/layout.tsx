@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import ScrollAnimator from "@/components/ScrollAnimator";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -22,17 +19,16 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "SM Struktur — Fine Carpentry",
+    default: "SM Struktur — Finsnickeri",
     template: "%s | SM Struktur",
   },
   description:
-    "Handcrafted furniture and bespoke woodwork. Each piece is built with intention — designed to last a lifetime.",
+    "Handgjorda möbler och skräddarsytt träarbete. Varje objekt byggt med intention — designat för att hålla livet ut.",
   openGraph: {
-    title: "SM Struktur — Fine Carpentry",
+    title: "SM Struktur — Finsnickeri",
     description:
-      "Handcrafted furniture and bespoke woodwork. Each piece is built with intention.",
+      "Handcrafted furniture and bespoke woodwork. Each piece built with intention.",
     type: "website",
-    locale: "en_US",
   },
 };
 
@@ -42,12 +38,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${inter.variable}`}>
+    <html lang="sv" className={`${cormorant.variable} ${inter.variable}`}>
       <body className="bg-cream text-charcoal antialiased min-h-screen flex flex-col">
-        <Navbar />
-        <ScrollAnimator />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        {children}
       </body>
     </html>
   );

@@ -12,30 +12,35 @@ import { urlFor } from "@/sanity/image";
 import StatusBadge from "@/components/StatusBadge";
 import PortableTextRenderer from "@/components/PortableTextRenderer";
 import PieceGallery from "@/components/PieceGallery";
+import type { Locale } from "@/lib/i18n";
+import { useT, localePath, locales } from "@/lib/i18n";
 
 export const revalidate = 60;
 
-// Pre-build all published piece pages at build time
 export async function generateStaticParams() {
   const slugs = await client.fetch<{ slug: string }[]>(allPieceSlugsQuery);
-  return slugs.map(({ slug }) => ({ slug }));
+  return locales.flatMap((locale) =>
+    slugs.map(({ slug }) => ({ locale, slug }))
+  );
 }
 
-// Next.js 15: params is a Promise
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const { locale, slug } = await params;
   const piece = await client.fetch<PieceDetail | null>(pieceBySlugQuery, {
     slug,
   });
   if (!piece) return { title: "Piece not found" };
 
+  const title =
+    locale === "en" && piece.title_en ? piece.title_en : piece.title;
+
   return {
-    title: piece.title,
-    description: `${piece.title} — handcrafted ${piece.category} by SM Struktur.`,
+    title,
+    description: `${title} — handcrafted ${piece.category} by SM Struktur.`,
     openGraph: {
       images: [
         urlFor(piece.heroImage).width(1200).height(630).fit("crop").url(),
@@ -44,27 +49,28 @@ export async function generateMetadata({
   };
 }
 
-const categoryLabel: Record<string, string> = {
-  furniture: "Furniture",
-  commission: "Custom Commission",
-  storage: "Storage",
-  seating: "Seating",
-  tables: "Tables",
-  outdoor: "Outdoor",
-};
-
-// Next.js 15: params is a Promise
 export default async function PieceDetailPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 }) {
-  const { slug } = await params;
+  const { locale, slug } = await params;
   const piece = await client.fetch<PieceDetail | null>(pieceBySlugQuery, {
     slug,
   });
 
   if (!piece) notFound();
+
+  const tr = useT(locale as Locale);
+  const lp = (path: string) => localePath(locale as Locale, path);
+
+  // Use locale-specific content with Swedish fallback
+  const title =
+    locale === "en" && piece.title_en ? piece.title_en : piece.title;
+  const description =
+    locale === "en" && piece.description_en?.length
+      ? piece.description_en
+      : piece.description;
 
   const heroUrl = urlFor(piece.heroImage)
     .width(1600)
@@ -94,7 +100,7 @@ export default async function PieceDetailPage({
         <div className="relative w-full aspect-[16/9] md:aspect-[21/9] overflow-hidden">
           <Image
             src={heroUrl}
-            alt={piece.heroImage.alt ?? piece.title}
+            alt={piece.heroImage.alt ?? title}
             fill
             className="object-cover"
             placeholder="blur"
@@ -114,18 +120,18 @@ export default async function PieceDetailPage({
             {/* Left: gallery + description */}
             <div>
               {hasGallery && (
-                <PieceGallery images={piece.images!} pieceTitle={piece.title} />
+                <PieceGallery images={piece.images!} pieceTitle={title} />
               )}
 
-              {piece.description && piece.description.length > 0 && (
+              {description && description.length > 0 && (
                 <div>
                   <div className="flex items-center gap-4 mb-8">
                     <div className="w-8 h-px bg-gold" />
                     <p className="font-sans text-xs tracking-[0.25em] uppercase text-gold">
-                      About this piece
+                      {tr.piece.aboutPiece}
                     </p>
                   </div>
-                  <PortableTextRenderer value={piece.description} />
+                  <PortableTextRenderer value={description} />
                 </div>
               )}
             </div>
@@ -134,12 +140,12 @@ export default async function PieceDetailPage({
             <div className="lg:sticky lg:top-28 self-start space-y-8">
 
               <div className="flex items-center gap-2 text-xs font-sans text-charcoal/40">
-                <Link href="/portfolio" className="hover:text-forest transition-colors">
-                  Work
+                <Link href={lp("/portfolio")} className="hover:text-forest transition-colors">
+                  {tr.piece.breadcrumbWork}
                 </Link>
                 <span>/</span>
                 <span className="text-charcoal/60">
-                  {categoryLabel[piece.category] ?? piece.category}
+                  {tr.categories[piece.category as keyof typeof tr.categories] ?? piece.category}
                 </span>
               </div>
 
@@ -148,7 +154,7 @@ export default async function PieceDetailPage({
                   className="font-serif text-display-md text-forest mb-4 leading-tight"
                   style={{ fontWeight: 300 }}
                 >
-                  {piece.title}
+                  {title}
                 </h1>
                 <StatusBadge status={piece.status} />
               </div>
@@ -156,7 +162,7 @@ export default async function PieceDetailPage({
               {piece.price && piece.status === "available" && (
                 <div>
                   <p className="font-sans text-xs tracking-widest uppercase text-charcoal/40 mb-1">
-                    Price
+                    {tr.piece.price}
                   </p>
                   <p className="font-serif text-3xl text-forest">
                     {piece.price.toLocaleString("sv-SE")}{" "}
@@ -168,7 +174,7 @@ export default async function PieceDetailPage({
               {piece.materials && piece.materials.length > 0 && (
                 <div>
                   <p className="font-sans text-xs tracking-widest uppercase text-charcoal/40 mb-3">
-                    Materials
+                    {tr.piece.materials}
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {piece.materials.map((m) => (
@@ -186,25 +192,25 @@ export default async function PieceDetailPage({
               {hasDimensions && (
                 <div>
                   <p className="font-sans text-xs tracking-widest uppercase text-charcoal/40 mb-3">
-                    Dimensions
+                    {tr.piece.dimensions}
                   </p>
                   <table className="font-sans text-sm text-charcoal/70 w-full">
                     <tbody>
                       {piece.dimensions!.height && (
                         <tr className="border-b border-sand">
-                          <td className="py-2 text-charcoal/40">Height</td>
+                          <td className="py-2 text-charcoal/40">{tr.piece.height}</td>
                           <td className="py-2 text-right">{piece.dimensions!.height} cm</td>
                         </tr>
                       )}
                       {piece.dimensions!.width && (
                         <tr className="border-b border-sand">
-                          <td className="py-2 text-charcoal/40">Width</td>
+                          <td className="py-2 text-charcoal/40">{tr.piece.width}</td>
                           <td className="py-2 text-right">{piece.dimensions!.width} cm</td>
                         </tr>
                       )}
                       {piece.dimensions!.depth && (
                         <tr className="border-b border-sand">
-                          <td className="py-2 text-charcoal/40">Depth</td>
+                          <td className="py-2 text-charcoal/40">{tr.piece.depth}</td>
                           <td className="py-2 text-right">{piece.dimensions!.depth} cm</td>
                         </tr>
                       )}
@@ -221,7 +227,7 @@ export default async function PieceDetailPage({
               {piece.year && (
                 <div>
                   <p className="font-sans text-xs tracking-widest uppercase text-charcoal/40 mb-1">
-                    Year
+                    {tr.piece.year}
                   </p>
                   <p className="font-sans text-sm text-charcoal/70">{piece.year}</p>
                 </div>
@@ -231,20 +237,20 @@ export default async function PieceDetailPage({
 
               {piece.status !== "sold" && (
                 <Link
-                  href={`/contact?piece=${encodeURIComponent(piece.title)}`}
+                  href={`${lp("/contact")}?piece=${encodeURIComponent(title)}`}
                   className="block w-full text-center bg-forest text-cream font-sans text-sm tracking-widest uppercase px-6 py-4 hover:bg-forest-dark transition-colors duration-300"
                 >
                   {piece.status === "commission"
-                    ? "Inquire About a Commission"
-                    : "Inquire About This Piece"}
+                    ? tr.piece.inquireCommission
+                    : tr.piece.inquirePiece}
                 </Link>
               )}
 
               <Link
-                href="/portfolio"
+                href={lp("/portfolio")}
                 className="block w-full text-center border border-forest/30 text-forest/60 font-sans text-xs tracking-widest uppercase px-6 py-3 hover:border-forest hover:text-forest transition-all duration-300"
               >
-                Back to All Work
+                {tr.piece.backToAll}
               </Link>
             </div>
           </div>

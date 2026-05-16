@@ -3,23 +3,27 @@
 import { useState } from "react";
 import PieceCard from "./PieceCard";
 import { PieceCard as PieceCardType, PieceCategory } from "@/sanity/queries";
-
-const CATEGORIES: { value: PieceCategory | "all"; label: string }[] = [
-  { value: "all", label: "All Work" },
-  { value: "furniture", label: "Furniture" },
-  { value: "tables", label: "Tables" },
-  { value: "seating", label: "Seating" },
-  { value: "storage", label: "Storage" },
-  { value: "commission", label: "Commissions" },
-  { value: "outdoor", label: "Outdoor" },
-];
+import type { Locale } from "@/lib/i18n";
+import { useT } from "@/lib/i18n";
 
 interface Props {
   pieces: PieceCardType[];
+  locale?: Locale;
 }
 
-export default function PortfolioGrid({ pieces }: Props) {
+export default function PortfolioGrid({ pieces, locale = "sv" }: Props) {
+  const tr = useT(locale);
   const [active, setActive] = useState<PieceCategory | "all">("all");
+
+  const CATEGORIES: { value: PieceCategory | "all"; label: string }[] = [
+    { value: "all", label: locale === "sv" ? "Alla arbeten" : "All Work" },
+    { value: "furniture", label: tr.categories.furniture },
+    { value: "tables", label: tr.categories.tables },
+    { value: "seating", label: tr.categories.seating },
+    { value: "storage", label: tr.categories.storage },
+    { value: "commission", label: tr.categories.commission },
+    { value: "outdoor", label: tr.categories.outdoor },
+  ];
 
   const availableCategories = CATEGORIES.filter(
     (cat) => cat.value === "all" || pieces.some((p) => p.category === cat.value)
@@ -50,12 +54,14 @@ export default function PortfolioGrid({ pieces }: Props) {
       {/* Masonry grid */}
       {filtered.length === 0 ? (
         <p className="font-sans text-sm text-charcoal/40 italic py-24 text-center">
-          No pieces in this category yet.
+          {locale === "sv"
+            ? "Inga objekt i den här kategorin ännu."
+            : "No pieces in this category yet."}
         </p>
       ) : (
         <div className="columns-1 sm:columns-2 lg:columns-3 gap-6">
           {filtered.map((piece, i) => (
-            <PieceCard key={piece._id} piece={piece} priority={i < 3} />
+            <PieceCard key={piece._id} piece={piece} priority={i < 3} locale={locale} />
           ))}
         </div>
       )}

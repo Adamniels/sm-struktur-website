@@ -6,32 +6,62 @@ import type { AboutPage as AboutPageData } from "@/sanity/queries";
 import { aboutQuery } from "@/sanity/queries";
 import { urlFor } from "@/sanity/image";
 import PortableTextRenderer from "@/components/PortableTextRenderer";
+import type { Locale } from "@/lib/i18n";
+import { useT, localePath } from "@/lib/i18n";
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-  title: "About",
-  description:
-    "The story behind SM Struktur — the craftsman, the workshop, and the approach to fine woodworking.",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const tr = useT(locale as Locale);
+  return {
+    title: tr.about.eyebrow,
+    description:
+      locale === "sv"
+        ? "Historien bakom SM Struktur — hantverkaren, verkstaden och filosofin bakom finsnickeri."
+        : "The story behind SM Struktur — the craftsman, the workshop, and the approach to fine woodworking.",
+  };
+}
 
-export default async function AboutPage() {
+export default async function AboutPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const tr = useT(locale as Locale);
+  const lp = (path: string) => localePath(locale as Locale, path);
   const about = await client.fetch<AboutPageData | null>(aboutQuery);
 
-  // Empty state — shown until content is added in the studio
-  if (!about || (!about.headline && !about.body)) {
+  // Use locale-specific content with Swedish fallback
+  const headline =
+    locale === "en" && about?.headline_en
+      ? about.headline_en
+      : about?.headline;
+  const subheadline =
+    locale === "en" && about?.subheadline_en
+      ? about.subheadline_en
+      : about?.subheadline;
+  const body =
+    locale === "en" && about?.body_en?.length ? about.body_en : about?.body;
+
+  if (!about || (!headline && !body)) {
     return (
       <>
         <section className="pt-36 pb-16 bg-cream">
           <div className="page-container">
             <p className="font-sans text-xs tracking-[0.25em] uppercase text-gold mb-4">
-              About
+              {tr.about.eyebrow}
             </p>
             <h1
               className="font-serif text-display-lg text-forest mb-6"
               style={{ fontWeight: 300 }}
             >
-              The maker
+              {tr.about.emptyHeadline}
             </h1>
             <div className="w-12 h-px bg-gold" />
           </div>
@@ -39,8 +69,8 @@ export default async function AboutPage() {
         <section className="bg-cream pb-24">
           <div className="page-container">
             <p className="font-sans text-sm text-charcoal/40 italic">
-              Add your story in the studio under{" "}
-              <strong className="text-charcoal/60">About Page</strong>.
+              {tr.about.emptyNote}{" "}
+              <strong className="text-charcoal/60">{tr.about.emptyNoteStrong}</strong>.
             </p>
           </div>
         </section>
@@ -58,7 +88,7 @@ export default async function AboutPage() {
       <section className="pt-36 pb-0 bg-cream">
         <div className="page-container">
           <p className="font-sans text-xs tracking-[0.25em] uppercase text-gold mb-4">
-            About
+            {tr.about.eyebrow}
           </p>
           <div className="w-12 h-px bg-gold" />
         </div>
@@ -71,21 +101,21 @@ export default async function AboutPage() {
 
             {/* Left: headline + subheadline + body */}
             <div className="order-2 lg:order-1">
-              {about.headline && (
+              {headline && (
                 <h1
                   className="font-serif text-display-lg text-forest mb-6 leading-tight"
                   style={{ fontWeight: 300 }}
                 >
-                  {about.headline}
+                  {headline}
                 </h1>
               )}
-              {about.subheadline && (
+              {subheadline && (
                 <p className="font-sans text-base text-gold mb-8 leading-relaxed">
-                  {about.subheadline}
+                  {subheadline}
                 </p>
               )}
-              {about.body && about.body.length > 0 && (
-                <PortableTextRenderer value={about.body} />
+              {body && body.length > 0 && (
+                <PortableTextRenderer value={body} />
               )}
             </div>
 
@@ -120,7 +150,7 @@ export default async function AboutPage() {
             <div className="flex items-center gap-4 mb-8">
               <div className="w-8 h-px bg-gold" />
               <p className="font-sans text-xs tracking-[0.25em] uppercase text-gold">
-                The workshop
+                {tr.about.workshop}
               </p>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -157,7 +187,7 @@ export default async function AboutPage() {
             <div className="flex items-center gap-4 mb-12">
               <div className="w-8 h-px bg-gold" />
               <p className="font-sans text-xs tracking-[0.25em] uppercase text-gold">
-                How I work
+                {tr.about.howIWork}
               </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-3xl">
@@ -187,20 +217,20 @@ export default async function AboutPage() {
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
             <div>
               <p className="font-sans text-xs tracking-[0.25em] uppercase text-gold mb-2">
-                Work together
+                {tr.about.workTogether}
               </p>
               <h2
                 className="font-serif text-3xl text-cream"
                 style={{ fontWeight: 300 }}
               >
-                Interested in a commission?
+                {tr.about.commissionCTA}
               </h2>
             </div>
             <Link
-              href="/contact"
+              href={lp("/contact")}
               className="flex-shrink-0 border border-gold text-gold font-sans text-sm tracking-widest uppercase px-8 py-4 hover:bg-gold hover:text-forest transition-all duration-300"
             >
-              Get in Touch
+              {tr.about.getInTouch}
             </Link>
           </div>
         </div>

@@ -3,18 +3,27 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-
-const navLinks = [
-  { label: "Work", href: "/portfolio" },
-  { label: "Commissions", href: "/commissions" },
-  { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
-];
+import type { Locale } from "@/lib/i18n";
+import { useT, localePath, switchLocalePath } from "@/lib/i18n";
 
 export default function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // Detect locale from the URL
+  const locale: Locale = pathname.startsWith("/en") ? "en" : "sv";
+  const tr = useT(locale);
+
+  const lp = (path: string) => localePath(locale, path);
+  const switchHref = switchLocalePath(locale, pathname);
+
+  const navLinks = [
+    { label: tr.nav.work, href: lp("/portfolio") },
+    { label: tr.nav.commissions, href: lp("/commissions") },
+    { label: tr.nav.about, href: lp("/about") },
+    { label: tr.nav.contact, href: lp("/contact") },
+  ];
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 40);
@@ -38,10 +47,10 @@ export default function Navbar() {
       <div className="page-container flex items-center justify-between h-16 md:h-20">
         {/* Wordmark */}
         <Link
-          href="/"
+          href={lp("/")}
           className="font-serif text-xl md:text-2xl text-forest tracking-wide hover:text-gold transition-colors duration-300"
         >
-          SM Struktur
+          SM Struktur AB
         </Link>
 
         {/* Desktop nav */}
@@ -51,7 +60,7 @@ export default function Navbar() {
               key={link.href}
               href={link.href}
               className={`font-sans text-sm tracking-widest uppercase transition-colors duration-300 ${
-                pathname === link.href
+                pathname === link.href || pathname.startsWith(link.href + "/")
                   ? "text-gold"
                   : "text-charcoal hover:text-forest"
               }`}
@@ -59,6 +68,14 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
+
+          {/* Language toggle */}
+          <Link
+            href={switchHref}
+            className="font-sans text-xs tracking-widest uppercase text-charcoal/50 hover:text-forest border border-charcoal/20 hover:border-forest px-2.5 py-1 transition-all duration-300"
+          >
+            {tr.nav.langToggle}
+          </Link>
         </nav>
 
         {/* Mobile hamburger */}
@@ -88,7 +105,7 @@ export default function Navbar() {
       {/* Mobile menu */}
       <div
         className={`md:hidden bg-cream border-t border-sand overflow-hidden transition-all duration-500 ${
-          menuOpen ? "max-h-64 opacity-100" : "max-h-0 opacity-0"
+          menuOpen ? "max-h-80 opacity-100" : "max-h-0 opacity-0"
         }`}
       >
         <nav className="page-container flex flex-col gap-1 py-4">
@@ -97,7 +114,7 @@ export default function Navbar() {
               key={link.href}
               href={link.href}
               className={`font-sans text-sm tracking-widest uppercase py-3 border-b border-sand/50 transition-colors duration-200 ${
-                pathname === link.href
+                pathname === link.href || pathname.startsWith(link.href + "/")
                   ? "text-gold"
                   : "text-charcoal hover:text-forest"
               }`}
@@ -105,6 +122,14 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
+
+          {/* Language toggle — mobile */}
+          <Link
+            href={switchHref}
+            className="font-sans text-xs tracking-widest uppercase py-3 text-charcoal/50 hover:text-forest transition-colors duration-200"
+          >
+            {tr.nav.langToggle}
+          </Link>
         </nav>
       </div>
     </header>

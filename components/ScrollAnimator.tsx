@@ -18,8 +18,9 @@ export default function ScrollAnimator() {
       ctxRef.current = null;
     }
 
-    // Animations only run on the home page
-    if (pathname !== "/") return;
+    // Animations only run on the home page (Swedish: "/", English: "/en")
+    const isHome = pathname === "/" || pathname === "/en";
+    if (!isHome) return;
 
     const ctx = gsap.context(() => {
       // ── Hero entrance ────────────────────────────────────────────────────────

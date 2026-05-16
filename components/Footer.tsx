@@ -1,7 +1,43 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import type { Locale } from "@/lib/i18n";
+import { useT, localePath } from "@/lib/i18n";
+
+const strings = {
+  sv: {
+    tagline: "Fina möbler och skräddarsytt träarbete. Varje objekt byggt med intention, designat för att hålla livet ut.",
+    navigate: "Navigera",
+    getInTouch: "Kontakt",
+    inquire: "Fråga om ett objekt",
+    startCommission: "Starta en beställning",
+    rights: "Alla rättigheter förbehållna.",
+  },
+  en: {
+    tagline: "Fine furniture and bespoke woodwork. Each piece built with intention, designed to last a lifetime.",
+    navigate: "Navigate",
+    getInTouch: "Get in Touch",
+    inquire: "Inquire about a piece",
+    startCommission: "Start a commission",
+    rights: "All rights reserved.",
+  },
+};
 
 export default function Footer() {
+  const pathname = usePathname();
+  const locale: Locale = pathname.startsWith("/en") ? "en" : "sv";
+  const tr = useT(locale);
+  const t = strings[locale];
+  const lp = (path: string) => localePath(locale, path);
   const year = new Date().getFullYear();
+
+  const navLinks = [
+    { label: tr.nav.work, href: lp("/portfolio") },
+    { label: tr.nav.commissions, href: lp("/commissions") },
+    { label: tr.nav.about, href: lp("/about") },
+    { label: tr.nav.contact, href: lp("/contact") },
+  ];
 
   return (
     <footer className="bg-forest text-cream/80">
@@ -10,25 +46,20 @@ export default function Footer() {
           {/* Brand column */}
           <div className="space-y-4">
             <p className="font-serif text-2xl text-cream tracking-wide">
-              SM Struktur
+              SM Struktur AB
             </p>
             <p className="font-sans text-sm leading-relaxed text-cream/60 max-w-xs">
-              Fine furniture and bespoke woodwork. Each piece built with intention, designed to last a lifetime.
+              {t.tagline}
             </p>
           </div>
 
           {/* Navigation */}
           <div className="space-y-4">
             <p className="font-sans text-xs tracking-widest uppercase text-gold">
-              Navigate
+              {t.navigate}
             </p>
             <nav className="flex flex-col gap-3">
-              {[
-                { label: "Work", href: "/portfolio" },
-                { label: "Commissions", href: "/commissions" },
-                { label: "About", href: "/about" },
-                { label: "Contact", href: "/contact" },
-              ].map((link) => (
+              {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
@@ -43,20 +74,20 @@ export default function Footer() {
           {/* Contact */}
           <div className="space-y-4">
             <p className="font-sans text-xs tracking-widest uppercase text-gold">
-              Get in Touch
+              {t.getInTouch}
             </p>
             <div className="space-y-2">
               <Link
-                href="/contact"
+                href={lp("/contact")}
                 className="block font-sans text-sm text-cream/70 hover:text-gold transition-colors duration-300"
               >
-                Inquire about a piece
+                {t.inquire}
               </Link>
               <Link
-                href="/commissions"
+                href={lp("/commissions")}
                 className="block font-sans text-sm text-cream/70 hover:text-gold transition-colors duration-300"
               >
-                Start a commission
+                {t.startCommission}
               </Link>
             </div>
             {/* Gold decorative line */}
@@ -67,10 +98,10 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="mt-16 pt-8 border-t border-cream/10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <p className="font-sans text-xs text-cream/40">
-            &copy; {year} SM Struktur. All rights reserved.
+            &copy; {year} SM Struktur. {t.rights}
           </p>
           <p className="font-sans text-xs text-cream/30 italic font-serif">
-            Handcrafted in Sweden
+            {tr.footer.tagline}
           </p>
         </div>
       </div>
