@@ -11,6 +11,7 @@ import {
 import { urlFor } from "@/sanity/image";
 import StatusBadge from "@/components/StatusBadge";
 import PortableTextRenderer from "@/components/PortableTextRenderer";
+import PieceGallery from "@/components/PieceGallery";
 
 export const revalidate = 60;
 
@@ -113,30 +114,7 @@ export default async function PieceDetailPage({
             {/* Left: gallery + description */}
             <div>
               {hasGallery && (
-                <div className="flex gap-3 overflow-x-auto pb-4 mb-12">
-                  {piece.images!.map((img, i) => {
-                    const thumbUrl = urlFor(img)
-                      .width(400)
-                      .height(500)
-                      .fit("crop")
-                      .auto("format")
-                      .url();
-                    return (
-                      <div
-                        key={i}
-                        className="flex-shrink-0 w-48 aspect-[4/5] relative overflow-hidden bg-sand"
-                      >
-                        <Image
-                          src={thumbUrl}
-                          alt={img.alt ?? `${piece.title} — image ${i + 2}`}
-                          fill
-                          className="object-cover hover:scale-105 transition-transform duration-500"
-                          sizes="192px"
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
+                <PieceGallery images={piece.images!} pieceTitle={piece.title} />
               )}
 
               {piece.description && piece.description.length > 0 && (

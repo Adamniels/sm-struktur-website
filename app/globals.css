@@ -129,6 +129,18 @@ p {
   opacity: 0;
 }
 
+/* yet-another-react-lightbox brand overrides */
+.yarl__root {
+  --yarl__color_backdrop: rgba(30, 30, 28, 0.97);
+  --yarl__color_button: rgba(247, 244, 239, 0.5);
+  --yarl__color_button_active: #bf9f4c;
+  --yarl__slide_captions_container_background: transparent;
+}
+.yarl__button {
+  filter: none;
+}
+
+
 /* Keep Sanity Studio styles isolated */
 #sanity-studio-portal * {
   font-family: unset;
